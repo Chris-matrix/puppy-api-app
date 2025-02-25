@@ -28,8 +28,8 @@ h1 {
 }
 
 img {
-  width: 80px; /* Adjusted width */ 
-  height: 80px; /* Adjusted height */
+  width: 80px;
+  height: 80px;
   object-fit: cover;
   margin-top: 10px;
 }

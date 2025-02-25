@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 export default function Puppy() {
   const [puppyImage, setPuppyImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [favorites, setFavorites] = useState([]);
 
   const fetchPuppy = async () => {
     setLoading(true);
@@ -19,8 +20,19 @@ export default function Puppy() {
     }
   };
 
+  const addFavorite = () => {
+    if (puppyImage && !favorites.includes(puppyImage)) {
+      const newFavorites = [...favorites, puppyImage];
+      setFavorites(newFavorites);
+      localStorage.setItem('favorites', JSON.stringify(newFavorites));
+      window.dispatchEvent(new Event('storage')); // Trigger storage event
+    }
+  };
+
   useEffect(() => {
     fetchPuppy(); // Load initial puppy
+    const storedFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    setFavorites(storedFavorites);
   }, []);
 
   return (
@@ -30,7 +42,17 @@ export default function Puppy() {
       {loading ? (
         <p className="text-lg text-gray-600">Loading...</p>
       ) : (
-        puppyImage && <img src={puppyImage} alt="Random Puppy" className="w-80 h-80 rounded-md shadow-md" />
+        puppyImage && (
+          <>
+            <img src={puppyImage} alt="Random Puppy" className="w-80 h-80 rounded-md shadow-md mb-4" />
+            <button
+              onClick={addFavorite}
+              className="mt-4 px-6 py-2 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 transition"
+            >
+              Add to Favorites
+            </button>
+          </>
+        )
       )}
 
       <button
