@@ -1,36 +1,146 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Puppy Image Generator with React
 
-## Getting Started
+## Introduction
+Welcome to this step-by-step tutorial series where we'll build a React application that fetches and displays random dog images. By the end of this series, you'll have a fully functional app with features like favorites, settings, and more!
 
-First, run the development server:
+## Prerequisites
+Before you get started, make sure you have:
+- Basic knowledge of HTML, CSS, and JavaScript
+- Node.js and npm installed on your computer
+- A code editor (like VS Code)
 
+## Part 1: Getting Started with React and Building a Simple Dog Image Generator
+
+### Step 1: Setting Up the Project
+First, let's create a new React project using Vite:
 ```bash
+npm create vite@latest puppy-app -- --template react
+cd puppy-app
+npm install
+Step 2: Creating Our First Component - GetPuppy
+We'll start with the simplest version of our dog image generator component.
+
+Create a New File: Create a file called GetPuppy.jsx in the src directory.
+
+Write the Component Code: Paste the following code into GetPuppy.jsx:
+
+javascript
+import { useState } from "react";
+
+function GetPuppy() {
+    const [pup, setPup] = useState("");
+
+    // Run this function when the button is clicked
+    async function pupAPI() {
+        const response = await fetch("https://dog.ceo/api/breeds/image/random");
+        const data = await response.json();
+        console.log(data);
+        setPup(data.message);
+    }
+
+    return (
+        <> 
+            <h2>Random Puppy Generator</h2> 
+            <img src={pup} alt="Random dog" />
+            <button onClick={pupAPI}>Get Puppy</button> 
+        </> 
+    );
+}
+
+export default GetPuppy;
+Step 3: Integrating the Component in App.jsx
+Update App.jsx: Modify your App.jsx to use the new GetPuppy component:
+
+javascript
+import GetPuppy from './GetPuppy';
+import './App.css';
+
+function App() {
+  return (
+    <div className="App">
+      <GetPuppy />
+    </div>
+  );
+}
+
+export default App;
+Step 4: Adding Styles with App.css
+Create or update the App.css file to style your app:
+
+css
+.App {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #f0f0f0;
+  padding: 20px;
+}
+
+h2 {
+  color: #333;
+}
+
+button {
+  background-color: #008cba;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 10px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #005f5f;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  margin-top: 20px;
+}
+Step 5: Testing the Application
+Run the Development Server:
+
+bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Visit the URL: Open the URL shown in your terminal (typically http://localhost:5173/). You should see a heading and a button. When you click the button, a random dog image will appear!
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Part 2: Improving Our App with Loading States, Error Handling, and useEffect
+Step 1: Creating an Enhanced Version
+Create a new file called GetPuppyUseState.jsx:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+javascript
+import { useState, useEffect } from "react";
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+function GetPuppy() {
+    const [dogImage, setDogImage] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-## Learn More
+    // Fetch function
+    async function pupAPI() {
+        try {
+            setLoading(true); // Start loading
+            setError(null); // Clear previous errors
 
-To learn more about Next.js, take a look at the following resources:
+            const response = await fetch("https://dog.ceo/api/breeds/image/random");
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+            if (!response.ok) {
+                throw new Error("Failed to fetch dog image");
+            }
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+            const data = await response.json();
+            setDogImage(data.message);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false); // Stop loading
+        }
+    }
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    // useEffect to fetch data on mount
+    
