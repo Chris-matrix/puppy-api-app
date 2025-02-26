@@ -1,9 +1,4 @@
 
-Today
-You said
-remake read me with markdowns and add dog like emojis
-Copilot said
-Here you go! I've revamped the README with markdowns and added some dog-like emojis 🐶 for fun.
 
 🐾 Puppy Image Generator with React 🐶
 🐕 Introduction
